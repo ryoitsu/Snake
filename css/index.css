@@ -1,0 +1,25 @@
+@font-face {
+  font-family: 'Chiller';
+  src:  url('/fonts/CHILLER.TTF')  format('truetype'), /* Safari, Android, iOS */
+}
+
+body{
+	margin:0;
+	padding:0;
+	background-image:url("/images/background.png");
+}
+
+#game{
+	position:absolute;
+}
+
+#border{
+	position:absolute;
+}
+
+#score{
+	float:right;
+	margin-right:10%;
+	color:#d30424;
+	font-family:'Chiller';
+}
