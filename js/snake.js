@@ -1,5 +1,5 @@
-var fieldWidth = 40;
-var fieldHeight = 40;
+var fieldWidth = 35;
+var fieldHeight = 35;
 var width, height;
 var fps = 30;
 var start = false;
@@ -25,8 +25,13 @@ var minesInterval;
 var portalsInterval;
 var foodAppearTime;
 var score = 0;
+
 var snakeSprite = new Image();
 snakeSprite.src = "/images/snake.png";
+var bombImg = new Image();
+bombImg.src = "/images/bomb.png";
+var portalsImg = new Image();
+portalsImg.src = "/images/portals.png";
 
 window.onload = function(){
 	
@@ -71,24 +76,23 @@ window.onload = function(){
 		
 		if(start == true)
 		{
-			if(!gameOver)
-			{
 				ctx.strokeRect(1,1,width-2,height-2);
 				drawField();
 				drawSnake();
 				drawFood();
 				drawMines();
 				drawPortals();
-				checkFoodCollision();
-				checkWallCollision();
-				checkSelfCollision();
-				checkMinesCollision();
-				checkPortalCollision();
-				snakeMove();
-				
-			}else{
-				drawGameOver();
-			}
+				if(!gameOver){
+					checkFoodCollision();
+					checkWallCollision();
+					checkSelfCollision();
+					checkMinesCollision();
+					checkPortalCollision();
+					snakeMove();
+				}
+				else{
+					drawGameOver();
+				}
 		}
 		else{
 			ctx.fillStyle = "red";
@@ -241,15 +245,27 @@ window.onload = function(){
 	}
 	
 	function drawMines(){
-		ctx.fillStyle = minesColor;
 		for(var i=0;i<mines.length;i++)
-			ctx.fillRect(mines[i].x*(width/fieldWidth),mines[i].y*(height/fieldHeight),width/fieldWidth,height/fieldHeight);
+			ctx.drawImage(bombImg, 0, 0, 64, 64, mines[i].x*(width/fieldWidth), mines[i].y*(height/fieldHeight), width/fieldWidth,height/fieldHeight);		
 	}
 	
+	var count = (function () {
+		var counter = new Point(0,0);
+		return function () {
+			counter.x++;
+			if(counter.x > 7)
+				counter.y++;
+			counter.y = counter.y > 1 ? 0 : counter.y;
+			counter.x = counter.x > 7 ? 0 : counter.x;
+			return counter;
+		}
+	})();
+	
 	function drawPortals(){
-		ctx.fillStyle = portalColor;
+
+		var countRes = count();
 		for(var i=0;i<portals.length;i++)
-			ctx.fillRect(portals[i].x*(width/fieldWidth),portals[i].y*(height/fieldHeight),width/fieldWidth,height/fieldHeight);
+			ctx.drawImage(portalsImg, countRes.x*64, countRes.y*64, 64, 64, portals[i].x*(width/fieldWidth), portals[i].y*(height/fieldHeight), width/fieldWidth,height/fieldHeight)	
 	}
 	
 	function drawFood(){
@@ -257,6 +273,8 @@ window.onload = function(){
 	}
 	
 	function drawGameOver(){
+		ctx.fillStyle = "rgba(0,0,0,0.5)";
+		ctx.fillRect(0,0,width,height);
 		ctx.fillStyle = "red";
 		ctx.font = calculateFontSize("Game Over",20)+"px Chiller";
 		ctx.fillText("Game Over",(width-ctx.measureText("Game Over").width)/2,(height-ctx.measureText("M").width)/2);
